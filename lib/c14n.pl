@@ -29,6 +29,9 @@ sub c14n_url {
     $url =~ s/^(%20)+//;
     $url =~ s/(%20)+$//;
 
+    # replace &amp;
+    $url =~ s/&amp;/&/g;
+
     # escape characters problematic in a regex
     $url =~ s/\|/%7C/g;
     $url =~ s/\[/%5B/g;

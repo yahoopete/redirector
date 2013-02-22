@@ -113,4 +113,20 @@ http://example.com,,
 
 [ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }
 
+# test: replace &amp; with correct &
+
+cat > $input <<!
+old,new,
+http://example.com/love&amp;it/,,
+!
+
+./tools/c14n.pl < $input > $output
+
+diff $output - <<!
+old,new,
+http://example.com/love&it,,
+!
+
+[ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }
+
 echo "$0: OK"
