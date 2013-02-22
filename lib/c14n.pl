@@ -23,6 +23,7 @@ sub c14n_url {
     $url =~ s/"/%22/g;
     $url =~ s/'/%27/g;
     $url =~ s/,/%2C/g;
+    $url =~ s/ /%20/g;
 
     # escape characters problematic in a regex
     $url =~ s/\|/%7C/g;

@@ -14,7 +14,7 @@ http://EXAMPLE.COM/UPPER-CASE,http://EXAMPLE.COM/TARGET,rest,of,line
 
 diff $output - <<!
 old,new,rest,of,line
-http://example.com/upper-case,http://example.com/target,rest,of,line
+http://example.com/upper-case,http://EXAMPLE.COM/TARGET,rest,of,line
 !
 
 [ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }
@@ -42,16 +42,16 @@ http://example.com,,
 # test: remove trailing insignificant characters
 
 cat > $input <<!
-old,new
-http://example.com?,
-http://example.com/,
-http://example.com#,
+old,new,source
+http://example.com?,,
+http://example.com/,,
+http://example.com#,,
 !
 
 ./tools/c14n.pl < $input > $output
 
 diff $output - <<!
-old,new
+old,new,source
 http://example.com,,
 http://example.com,,
 http://example.com,,
@@ -73,6 +73,22 @@ diff $output - <<!
 old,new,
 http://example.com?query-one,,
 http://example.com?query-two,,
+!
+
+[ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }
+
+# test: remove quoting
+
+cat > $input <<!
+old,new,
+"http://example.com/spaces in url",,
+!
+
+./tools/c14n.pl < $input > $output
+
+diff $output - <<!
+old,new,
+http://example.com/spaces%20in%20url,,
 !
 
 [ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }

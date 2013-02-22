@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 #
-# c14n.pl - canonicalise first two urls in input csv
+# c14n.pl - canonicalise first url in input csv
 #
 
 use v5.10;
@@ -9,6 +9,7 @@ use strict;
 use warnings;
 use Getopt::Long;
 use Pod::Usage;
+use Text::CSV;
 
 require 'lib/c14n.pl';
 
@@ -23,26 +24,25 @@ GetOptions(
 
 pod2usage(2) if ($help);
 
-while (<STDIN>) {
-  chomp;
+my $csv = Text::CSV->new( { binary => 1 } ) or die "Cannot use Text::CSV";
+$csv->eol("\n");
 
+while (my $row = $csv->getline(*STDIN)) {
   unless ($titles) {
-    $titles = $_;
-    say $titles;
+    $titles = "found";
+    $csv->print(*STDOUT, $row);
     next;
   }
 
-  my ($old, $new, $rest) = split(/,/, $_, 3);
-  say c14n_url($old, $allow_query_string) . ',' .
-    c14n_url($new, $allow_query_string) . ',' .
-    ($rest || '');
+  $row->[0] = c14n_url($row->[0], $allow_query_string);
+  $csv->print(*STDOUT, $row);
 }
 
 __END__
 
 =head1 NAME
 
-c14n - canonicalise the first two columns in the input csv
+c14n - canonicalise the first column in the input csv
 
 =head1 SYNOPSIS
 
