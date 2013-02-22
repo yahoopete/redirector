@@ -22,19 +22,19 @@ http://example.com/upper-case,http://example.com/target,rest,of,line
 # test: remove fragments and query strings
 
 cat > $input <<!
-old,new
-http://example.com#fragment,
-http://example.com?query-string,
-http://example.com?another-query-string,
+old,new,source
+http://example.com#fragment,,
+http://example.com?query-string,,
+http://example.com?another-query-string,,
 !
 
 ./tools/c14n.pl < $input > $output
 
 diff $output - <<!
-old,new
-http://example.com,
-http://example.com,
-http://example.com,
+old,new,source
+http://example.com,,
+http://example.com,,
+http://example.com,,
 !
 
 [ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }
@@ -52,9 +52,9 @@ http://example.com#,
 
 diff $output - <<!
 old,new
-http://example.com,
-http://example.com,
-http://example.com,
+http://example.com,,
+http://example.com,,
+http://example.com,,
 !
 
 [ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }
@@ -62,17 +62,17 @@ http://example.com,
 # test: keep query string if we specify the option
 
 cat > $input <<!
-old,new
-http://example.com?query-one,
-http://example.com?query-two,
+old,new,
+http://example.com?query-one,,
+http://example.com?query-two,,
 !
 
 ./tools/c14n.pl --allow-query-string < $input > $output
 
 diff $output - <<!
-old,new
-http://example.com?query-one,
-http://example.com?query-two,
+old,new,
+http://example.com?query-one,,
+http://example.com?query-two,,
 !
 
 [ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }

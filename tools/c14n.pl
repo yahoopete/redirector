@@ -32,11 +32,10 @@ while (<STDIN>) {
     next;
   }
 
-  my @fields = split(/,/);
-  $fields[0] = c14n_url($fields[0], $allow_query_string);
-  $fields[1] = c14n_url($fields[1], $allow_query_string);
-
-  say join(',', @fields);
+  my ($old, $new, $rest) = split(/,/, $_, 3);
+  say c14n_url($old, $allow_query_string) . ',' .
+    c14n_url($new, $allow_query_string) . ',' .
+    ($rest || '');
 }
 
 __END__
