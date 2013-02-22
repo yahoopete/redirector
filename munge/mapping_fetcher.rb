@@ -50,7 +50,7 @@ class MappingFetcher
       $stderr.puts "Writing mappings"
       output_csv << ['Old Url', 'New Url', 'Status']
       i = 0
-      rows = ensure_no_duplicates(remap_new_urls(skip_rows_with_blank_or_invalid_old_url(sanitize_urls(input))))
+      rows = ensure_no_duplicates(remap_new_urls(skip_rows_with_blank_or_invalid_old_url(input)))
       rows.each do |row|
         new_row = [
           row['old url'],
@@ -84,20 +84,6 @@ class MappingFetcher
           'old url' => row['old url'],
           'new url' => new_url,
           'status'  => row['status']
-        }
-      end
-    end
-  end
-
-  def sanitize_urls(rows)
-    Enumerator.new do |yielder|
-      rows.each do |row|
-        yielder << {
-          'source' => row['source'],
-          'row_number' => row['row_number'],
-          'old url' => sanitize_url(row['old url']),
-          'new url' => sanitize_url(row['new url']),
-          'status' => sanitize_url(row['status'])
         }
       end
     end
@@ -250,15 +236,5 @@ class MappingFetcher
     url && url =~ %r{^https?://} && URI.parse(url)
   rescue
     false
-  end
-
-  def sanitize_url(url)
-    url && url.
-      gsub(" ", "%20").
-      sub(/(%20)+$/, "").
-      sub(/^(%20)+/, "").
-      gsub("&amp;", "&").
-      gsub(/^([^\(]*)\)/, '\1').
-      gsub(",", "%2C")
   end
 end
