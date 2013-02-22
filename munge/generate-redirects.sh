@@ -92,6 +92,7 @@ status "Concatenating mappings ..."
 status "Munging and tidying mappings ..."
 set -x
 cat $all_file |
+    ./tools/c14n.pl $validate_options |
     ./munge/munge.rb $whitehall |
     ./tools/fold-mappings.rb |
     ./tools/choose-status.rb |
