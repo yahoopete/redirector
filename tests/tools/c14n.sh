@@ -93,4 +93,24 @@ http://example.com/spaces%20in%20url,,
 
 [ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }
 
+# test: trim spaces
+
+cat > $input <<!
+old,new,
+ http://example.com,,
+http://example.com ,,
+%20http://example.com,,
+!
+
+./tools/c14n.pl < $input > $output
+
+diff $output - <<!
+old,new,
+http://example.com,,
+http://example.com,,
+http://example.com,,
+!
+
+[ $? -ne 0 ] && { echo "$0: FAIL" ; exit 1; }
+
 echo "$0: OK"

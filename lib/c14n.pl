@@ -25,6 +25,10 @@ sub c14n_url {
     $url =~ s/,/%2C/g;
     $url =~ s/ /%20/g;
 
+    # remove trailing/leading whitespace, whether url-encoded or not
+    $url =~ s/^(%20)+//;
+    $url =~ s/(%20)+$//;
+
     # escape characters problematic in a regex
     $url =~ s/\|/%7C/g;
     $url =~ s/\[/%5B/g;
